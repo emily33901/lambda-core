@@ -1,4 +1,4 @@
-module github.com/galaco/Lambda-Core
+module github.com/emily33901/lambda-core
 
 require (
 	github.com/galaco/KeyValues v1.3.1
