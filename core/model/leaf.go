@@ -1,7 +1,7 @@
 package model
 
 import (
-	"github.com/galaco/Lambda-Core/core/mesh"
+	"github.com/emily33901/lambda-core/core/mesh"
 	"github.com/go-gl/mathgl/mgl32"
 )
 

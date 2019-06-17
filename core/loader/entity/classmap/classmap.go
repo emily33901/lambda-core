@@ -1,7 +1,7 @@
 package loader
 
 import (
-	entity3 "github.com/galaco/Lambda-Core/core/entity"
+	entity3 "github.com/emily33901/lambda-core/core/entity"
 )
 
 // entityClassMapper provides a reflection-like construct for creating

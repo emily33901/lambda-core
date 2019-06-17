@@ -1,8 +1,9 @@
 package entity
 
 import (
-	"github.com/go-gl/mathgl/mgl32"
 	"math"
+
+	"github.com/go-gl/mathgl/mgl32"
 )
 
 const cameraSpeed = float64(320)
@@ -11,25 +12,49 @@ const sensitivity = float32(0.03)
 var minVerticalRotation = mgl32.DegToRad(90)
 var maxVerticalRotation = mgl32.DegToRad(270)
 
+const (
+	OrthoX = 0
+	OrthoY = 1
+	OrthoZ = 2
+)
+
+var (
+	OrthoDirections = [...]string{
+		"X",
+		"Y",
+		"Z",
+	}
+)
+
 // Camera
 type Camera struct {
 	*Base
-	fov         float32
-	aspectRatio float32
-	up          mgl32.Vec3
-	right       mgl32.Vec3
-	direction   mgl32.Vec3
-	worldUp     mgl32.Vec3
+	fov              float32
+	aspectRatio      float32
+	up               mgl32.Vec3
+	right            mgl32.Vec3
+	direction        mgl32.Vec3
+	worldUp          mgl32.Vec3
+	ortho            bool
+	orthoOrientation int
 }
 
 // Forwards
 func (camera *Camera) Forwards(dt float64) {
-	camera.Transform().Position = camera.Transform().Position.Add(camera.direction.Mul(float32(cameraSpeed * dt)))
+	if !camera.ortho {
+		camera.Transform().Position = camera.Transform().Position.Add(camera.direction.Mul(float32(cameraSpeed * dt)))
+	} else {
+		camera.Transform().Position = camera.Transform().Position.Add(camera.up.Mul(float32(-cameraSpeed * dt)))
+	}
 }
 
 // Backwards
 func (camera *Camera) Backwards(dt float64) {
-	camera.Transform().Position = camera.Transform().Position.Sub(camera.direction.Mul(float32(cameraSpeed * dt)))
+	if !camera.ortho {
+		camera.Transform().Position = camera.Transform().Position.Sub(camera.direction.Mul(float32(cameraSpeed * dt)))
+	} else {
+		camera.Transform().Position = camera.Transform().Position.Sub(camera.up.Mul(float32(-cameraSpeed * dt)))
+	}
 }
 
 // Left
@@ -55,6 +80,42 @@ func (camera *Camera) Rotate(x, y, z float32) {
 	if camera.Transform().Rotation[2] < minVerticalRotation {
 		camera.Transform().Rotation[2] = minVerticalRotation
 	}
+}
+
+func (camera *Camera) setRotation(x, y, z float32) {
+	camera.Transform().Rotation[0] = float32(x)
+	camera.Transform().Rotation[1] = float32(y)
+	camera.Transform().Rotation[2] = float32(z)
+}
+
+// SetAspect
+func (camera *Camera) SetAspect(newAspect float32) {
+	camera.aspectRatio = newAspect
+}
+
+func (camera *Camera) Zoom(dt float32) {
+	camera.fov += dt
+
+	if camera.fov > 71 {
+		camera.fov = 71
+	} else if camera.fov < 69.3 {
+		camera.fov = 69.3
+	}
+}
+
+func (camera *Camera) Ortho() bool {
+	return camera.ortho
+}
+
+func (camera *Camera) SetOrtho(enabled bool) {
+	camera.ortho = enabled
+}
+
+func (camera *Camera) OrthoDirection() int {
+	return camera.orthoOrientation
+}
+func (camera *Camera) SetOrthoDirection(new int) {
+	camera.orthoOrientation = new
 }
 
 // Update updates the camera position
@@ -88,6 +149,19 @@ func (camera *Camera) ModelMatrix() mgl32.Mat4 {
 
 // ViewMatrix calculates the cameras View matrix
 func (camera *Camera) ViewMatrix() mgl32.Mat4 {
+	if camera.ortho {
+		// @TODO We probably shouldnt be doing this every time...
+		// And we defo should not be doing it here!
+		switch camera.orthoOrientation {
+		case OrthoX:
+			camera.setRotation(0, mgl32.DegToRad(-90), 0)
+		case OrthoY:
+			camera.setRotation(0, 0, 0)
+		case OrthoZ:
+			camera.setRotation(mgl32.DegToRad(90), 0, 0)
+		}
+	}
+
 	return mgl32.LookAtV(
 		camera.Transform().Position,
 		camera.Transform().Position.Add(camera.direction),
@@ -97,7 +171,17 @@ func (camera *Camera) ViewMatrix() mgl32.Mat4 {
 // ProjectionMatrix calculates projection matrix.
 // This is unlikely to change throughout program lifetime, but could do
 func (camera *Camera) ProjectionMatrix() mgl32.Mat4 {
+	if camera.ortho {
+		// @TODO we need a "zoom" for ortho
+		base := 50 * camera.fov
+		return mgl32.Ortho(0, base*camera.aspectRatio, base, 0, -99999, 99999)
+	}
+
 	return mgl32.Perspective(camera.fov, camera.aspectRatio, 0.1, 16384)
+}
+
+func (camera *Camera) Fov() float32 {
+	return camera.fov
 }
 
 // NewCamera returns a new camera

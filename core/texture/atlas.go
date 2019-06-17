@@ -1,9 +1,9 @@
 package texture
 
 import (
-	"github.com/galaco/Lambda-Core/lib/math/shape"
+	"github.com/emily33901/lambda-core/lib/math/shape"
+	"github.com/emily33901/vtf/format"
 	"github.com/galaco/packrect"
-	"github.com/galaco/vtf/format"
 	"github.com/go-gl/mathgl/mgl32"
 )
 

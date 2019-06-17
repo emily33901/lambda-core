@@ -1,7 +1,7 @@
 package material
 
 import (
-	"github.com/galaco/Lambda-Core/core/texture"
+	"github.com/emily33901/lambda-core/core/texture"
 	"testing"
 )
 

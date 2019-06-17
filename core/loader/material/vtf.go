@@ -1,12 +1,13 @@
 package material
 
 import (
-	"github.com/galaco/Lambda-Core/core/filesystem"
-	"github.com/galaco/Lambda-Core/core/logger"
-	"github.com/galaco/Lambda-Core/core/resource"
-	"github.com/galaco/Lambda-Core/core/texture"
-	"github.com/galaco/vtf"
 	"strings"
+
+	"github.com/emily33901/lambda-core/core/filesystem"
+	"github.com/emily33901/lambda-core/core/logger"
+	"github.com/emily33901/lambda-core/core/resource"
+	"github.com/emily33901/lambda-core/core/texture"
+	"github.com/emily33901/vtf"
 )
 
 // LoadSingleTexture
@@ -48,8 +49,8 @@ func readVtf(path string, fs filesystem.IFileSystem) (texture.ITexture, error) {
 		texture.NewTexture2D(
 			path,
 			read,
-			int(read.GetHeader().Width),
-			int(read.GetHeader().Height)))
+			int(read.Header().Width),
+			int(read.Header().Height)))
 
 	// Finally generate the gpu buffer for the material
 	return ResourceManager.Texture(path).(texture.ITexture), nil

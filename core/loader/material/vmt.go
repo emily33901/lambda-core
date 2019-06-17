@@ -2,14 +2,15 @@ package material
 
 import (
 	"errors"
-	"github.com/galaco/KeyValues"
-	"github.com/galaco/Lambda-Core/core/filesystem"
-	keyvalues2 "github.com/galaco/Lambda-Core/core/loader/keyvalues"
-	"github.com/galaco/Lambda-Core/core/logger"
-	"github.com/galaco/Lambda-Core/core/material"
-	"github.com/galaco/Lambda-Core/core/resource"
-	"github.com/galaco/Lambda-Core/core/texture"
 	"strings"
+
+	"github.com/emily33901/lambda-core/core/filesystem"
+	keyvalues2 "github.com/emily33901/lambda-core/core/loader/keyvalues"
+	"github.com/emily33901/lambda-core/core/logger"
+	"github.com/emily33901/lambda-core/core/material"
+	"github.com/emily33901/lambda-core/core/resource"
+	"github.com/emily33901/lambda-core/core/texture"
+	keyvalues "github.com/galaco/KeyValues"
 )
 
 // LoadMaterialList GetFile all materials referenced in the map
@@ -93,15 +94,15 @@ func loadMaterials(fs filesystem.IFileSystem, materialList ...string) (missingLi
 // LoadSingleMaterial loads a single material with known file path
 func LoadSingleMaterial(filePath string, fs filesystem.IFileSystem) material.IMaterial {
 	if resource.Manager().HasMaterial(filesystem.BasePathMaterial + filePath) {
-		return resource.Manager().Material(filesystem.BasePathMaterial + filePath).(material.IMaterial)
+		return resource.Manager().Material(filesystem.BasePathMaterial + filePath)
 	}
 
 	result := loadMaterials(fs, filePath)
 	if len(result) == 0 {
-		return resource.Manager().Material(filesystem.BasePathMaterial + filePath).(material.IMaterial)
+		return resource.Manager().Material(filesystem.BasePathMaterial + filePath)
 
 	}
-	return resource.Manager().Material(resource.Manager().ErrorTextureName()).(material.IMaterial)
+	return resource.Manager().Material(resource.Manager().ErrorTextureName())
 }
 
 func readVmt(path string, fs filesystem.IFileSystem) (material.IMaterial, error) {

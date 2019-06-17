@@ -1,12 +1,12 @@
 package loader
 
 import (
-	"github.com/galaco/Lambda-Core/core/filesystem"
-	material2 "github.com/galaco/Lambda-Core/core/loader/material"
-	"github.com/galaco/Lambda-Core/core/material"
-	"github.com/galaco/Lambda-Core/core/mesh/primitive"
-	"github.com/galaco/Lambda-Core/core/model"
-	"github.com/galaco/Lambda-Core/core/texture"
+	"github.com/emily33901/lambda-core/core/filesystem"
+	material2 "github.com/emily33901/lambda-core/core/loader/material"
+	"github.com/emily33901/lambda-core/core/material"
+	"github.com/emily33901/lambda-core/core/mesh/primitive"
+	"github.com/emily33901/lambda-core/core/model"
+	"github.com/emily33901/lambda-core/core/texture"
 )
 
 const skyboxRootDir = "skybox/"

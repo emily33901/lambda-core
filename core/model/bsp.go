@@ -1,6 +1,6 @@
 package model
 
-import "github.com/galaco/Lambda-Core/core/mesh"
+import "github.com/emily33901/lambda-core/core/mesh"
 
 // Bsp is a specialised model that represents an entire bsp map
 // It is represented by a single mesh and a series of visiblity structures

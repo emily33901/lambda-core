@@ -1,14 +1,15 @@
 package resource
 
 import (
-	"github.com/galaco/Lambda-Core/core/event"
-	"github.com/galaco/Lambda-Core/core/filesystem"
-	"github.com/galaco/Lambda-Core/core/material"
-	"github.com/galaco/Lambda-Core/core/model"
-	"github.com/galaco/Lambda-Core/core/resource/message"
-	"github.com/galaco/Lambda-Core/core/texture"
 	"strings"
 	"sync"
+
+	"github.com/emily33901/lambda-core/core/event"
+	"github.com/emily33901/lambda-core/core/filesystem"
+	"github.com/emily33901/lambda-core/core/material"
+	"github.com/emily33901/lambda-core/core/model"
+	"github.com/emily33901/lambda-core/core/resource/message"
+	"github.com/emily33901/lambda-core/core/texture"
 )
 
 // Very generic filesystem storage.
@@ -18,11 +19,11 @@ type manager struct {
 	errorTextureName string
 
 	materials         map[string]material.IMaterial
-	materialReadMutex sync.Mutex
+	materialReadMutex sync.RWMutex
 	textures          map[string]texture.ITexture
-	textureReadMutex  sync.Mutex
+	textureReadMutex  sync.RWMutex
 	models            map[string]*model.Model
-	modelReadMutex    sync.Mutex
+	modelReadMutex    sync.RWMutex
 }
 
 // Add a new material
@@ -45,6 +46,7 @@ func (m *manager) AddTexture(file texture.ITexture) {
 	m.textureReadMutex.Lock()
 	m.textures[strings.ToLower(file.FilePath())] = file
 	m.textureReadMutex.Unlock()
+
 	event.Manager().Dispatch(message.LoadedTexture(file))
 }
 
@@ -56,19 +58,29 @@ func (m *manager) AddModel(file *model.Model) {
 	m.modelReadMutex.Lock()
 	m.models[strings.ToLower(file.FilePath())] = file
 	m.modelReadMutex.Unlock()
+
 	event.Manager().Dispatch(message.LoadedModel(file))
 }
 
 // Get Find a specific filesystem
 func (m *manager) Material(filePath string) material.IMaterial {
+	m.materialReadMutex.Lock()
+	defer m.materialReadMutex.Unlock()
+
 	return m.materials[strings.ToLower(filePath)]
 }
 
 func (m *manager) Texture(filePath string) texture.ITexture {
+	m.textureReadMutex.Lock()
+	defer m.textureReadMutex.Unlock()
+
 	return m.textures[strings.ToLower(filePath)]
 }
 
 func (m *manager) Model(filePath string) *model.Model {
+	m.modelReadMutex.Lock()
+	defer m.modelReadMutex.Unlock()
+
 	return m.models[strings.ToLower(filePath)]
 }
 
@@ -109,32 +121,32 @@ func (m *manager) SetErrorTextureName(name string) {
 // Has the specified file been loaded
 func (m *manager) HasMaterial(filePath string) bool {
 	m.materialReadMutex.Lock()
+	defer m.materialReadMutex.Unlock()
+
 	if m.materials[strings.ToLower(filePath)] != nil {
-		m.materialReadMutex.Unlock()
 		return true
 	}
-	m.materialReadMutex.Unlock()
 	return false
 }
 
 func (m *manager) HasTexture(filePath string) bool {
 	m.textureReadMutex.Lock()
+	defer m.textureReadMutex.Unlock()
+
 	if m.textures[strings.ToLower(filePath)] != nil {
-		m.textureReadMutex.Unlock()
 		return true
 	}
-	m.textureReadMutex.Unlock()
 	return false
 }
 
 // Has the specified model been loaded
 func (m *manager) HasModel(filePath string) bool {
 	m.modelReadMutex.Lock()
+	defer m.modelReadMutex.Unlock()
+
 	if m.models[strings.ToLower(filePath)] != nil {
-		m.modelReadMutex.Unlock()
 		return true
 	}
-	m.modelReadMutex.Unlock()
 	return false
 }
 

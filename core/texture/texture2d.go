@@ -1,7 +1,7 @@
 package texture
 
 import (
-	"github.com/galaco/vtf"
+	"github.com/emily33901/vtf"
 )
 
 // Texture2D is a generic GPU material struct
@@ -29,21 +29,33 @@ func (tex *Texture2D) Height() int {
 
 // Format returns this materials colour format
 func (tex *Texture2D) Format() uint32 {
-	return tex.vtf.GetHeader().HighResImageFormat
+	return tex.vtf.Header().HighResImageFormat
 }
 
 // PixelDataForFrame get raw colour data for this frame
 func (tex *Texture2D) PixelDataForFrame(frame int) []byte {
-	return tex.vtf.GetHighestResolutionImageForFrame(frame)
+	return tex.vtf.HighestResolutionImageForFrame(frame)
 }
 
 // Thumbnail returns a small thumbnail image of a material
 func (tex *Texture2D) Thumbnail() []byte {
-	return tex.vtf.GetLowResImageData()
+	return tex.vtf.LowResImageData()
+}
+
+// Since a Texture2D is always in memory if it is being used
+// These shouldnt do anything
+
+func (tex *Texture2D) Reload() error {
+	// logger.Warn("You cannot Reload() a Texture2D")
+	return nil
+}
+func (tex *Texture2D) EvictFromMainMemory() {
+	// logger.Warn("You cannot Evict() a Texture2D")
 }
 
 // NewTexture2D returns a new texture from Vtf
 func NewTexture2D(filePath string, vtf *vtf.Vtf, width int, height int) *Texture2D {
+	// @TODO: we should be able to load the vtf all by ourselves!
 	return &Texture2D{
 		filePath: filePath,
 		width:    width,

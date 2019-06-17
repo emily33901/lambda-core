@@ -1,11 +1,11 @@
 package entity
 
 import (
-	"github.com/galaco/Lambda-Core/core/entity"
-	"github.com/galaco/Lambda-Core/core/filesystem"
-	"github.com/galaco/Lambda-Core/core/loader/prop"
-	"github.com/galaco/Lambda-Core/core/resource"
-	entity2 "github.com/galaco/Lambda-Core/game/entity"
+	"github.com/emily33901/lambda-core/core/entity"
+	"github.com/emily33901/lambda-core/core/filesystem"
+	"github.com/emily33901/lambda-core/core/loader/prop"
+	"github.com/emily33901/lambda-core/core/resource"
+	entity2 "github.com/emily33901/lambda-core/game/entity"
 	"strings"
 )
 

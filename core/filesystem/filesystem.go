@@ -2,12 +2,13 @@ package filesystem
 
 import (
 	"bytes"
-	"github.com/galaco/bsp/lumps"
-	"github.com/galaco/vpk2"
 	"io"
 	"io/ioutil"
 	"os"
 	"strings"
+
+	"github.com/galaco/bsp/lumps"
+	vpk "github.com/galaco/vpk2"
 )
 
 // Path
@@ -128,4 +129,29 @@ func (fs *FileSystem) GetFile(filename string) (io.Reader, error) {
 	}
 
 	return nil, NewFileNotFoundError(filename)
+}
+
+// AllPaths returns all the paths (files) that are currently loaded
+func (fs *FileSystem) AllPaths() []string {
+	results := []string{}
+
+	// Start with the local directories
+	for _, dir := range fs.localDirectories {
+		finfo, err := ioutil.ReadDir(dir)
+		if err == nil {
+			for _, f := range finfo {
+				// @TODO check this returns the correct file name
+				results = append(results, f.Name())
+			}
+		}
+	}
+
+	// Now do vpks
+	for _, vfs := range fs.gameVPKs {
+		results = append(results, vfs.Paths()...)
+	}
+
+	// @TODO: handle pak files
+
+	return results
 }

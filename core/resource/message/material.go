@@ -1,8 +1,8 @@
 package message
 
 import (
-	"github.com/galaco/Lambda-Core/core/event"
-	"github.com/galaco/Lambda-Core/core/material"
+	"github.com/emily33901/lambda-core/core/event"
+	"github.com/emily33901/lambda-core/core/material"
 )
 
 const (

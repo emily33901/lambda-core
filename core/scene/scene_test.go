@@ -1,8 +1,8 @@
 package scene
 
 import (
-	"github.com/galaco/Lambda-Core/core/mesh"
-	"github.com/galaco/Lambda-Core/core/model"
+	"github.com/emily33901/lambda-core/core/mesh"
+	"github.com/emily33901/lambda-core/core/model"
 	"reflect"
 	"testing"
 )

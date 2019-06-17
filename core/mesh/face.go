@@ -1,8 +1,8 @@
 package mesh
 
 import (
-	"github.com/galaco/Lambda-Core/core/material"
-	"github.com/galaco/Lambda-Core/core/texture"
+	"github.com/emily33901/lambda-core/core/material"
+	"github.com/emily33901/lambda-core/core/texture"
 )
 
 // Face

@@ -1,12 +1,12 @@
 package loader
 
 import (
-	"github.com/galaco/Lambda-Core/core/filesystem"
-	"github.com/galaco/Lambda-Core/core/loader/prop"
-	"github.com/galaco/Lambda-Core/core/logger"
-	"github.com/galaco/Lambda-Core/core/model"
-	"github.com/galaco/Lambda-Core/core/resource"
-	"github.com/galaco/Lambda-Core/lib/util"
+	"github.com/emily33901/lambda-core/core/filesystem"
+	"github.com/emily33901/lambda-core/core/loader/prop"
+	"github.com/emily33901/lambda-core/core/logger"
+	"github.com/emily33901/lambda-core/core/model"
+	"github.com/emily33901/lambda-core/core/resource"
+	"github.com/emily33901/lambda-core/lib/util"
 	"github.com/galaco/bsp/primitives/game"
 	"strings"
 )

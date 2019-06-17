@@ -2,8 +2,8 @@ package filesystem
 
 import (
 	"github.com/galaco/KeyValues"
-	"github.com/galaco/Lambda-Core/core/logger"
-	"github.com/galaco/Lambda-Core/lib/vpk"
+	"github.com/emily33901/lambda-core/core/logger"
+	"github.com/emily33901/lambda-core/lib/vpk"
 	"path/filepath"
 	"regexp"
 	"strings"

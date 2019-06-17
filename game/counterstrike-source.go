@@ -1,8 +1,8 @@
 package game
 
 import (
-	"github.com/galaco/Lambda-Core/core/loader/entity/classmap"
-	"github.com/galaco/Lambda-Core/game/entity/common"
+	"github.com/emily33901/lambda-core/core/loader/entity/classmap"
+	"github.com/emily33901/lambda-core/game/entity/common"
 )
 
 // CounterstrikeSource

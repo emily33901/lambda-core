@@ -1,8 +1,8 @@
 package material
 
 import (
-	"github.com/galaco/Lambda-Core/core/filesystem"
-	"github.com/galaco/Lambda-Core/lib/stringtable"
+	"github.com/emily33901/lambda-core/core/filesystem"
+	"github.com/emily33901/lambda-core/lib/stringtable"
 	"github.com/galaco/bsp/lumps"
 	"github.com/galaco/bsp/primitives/texinfo"
 	"github.com/galaco/source-tools-common/texdatastringtable"

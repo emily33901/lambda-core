@@ -1,8 +1,9 @@
 package texture
 
 import (
-	"github.com/galaco/vtf/format"
 	"testing"
+
+	"github.com/emily33901/vtf/format"
 )
 
 func TestNewError(t *testing.T) {

@@ -8,4 +8,7 @@ type ITexture interface {
 	PixelDataForFrame(int) []byte
 	FilePath() string
 	Thumbnail() []byte
+
+	EvictFromMainMemory()
+	Reload() error
 }

@@ -1,9 +1,10 @@
 package filesystem
 
 import (
+	"io"
+
 	"github.com/galaco/bsp/lumps"
 	vpk "github.com/galaco/vpk2"
-	"io"
 )
 
 // IFileSystem represents a Source Engine filesystem
@@ -24,4 +25,6 @@ type IFileSystem interface {
 	EnumerateResourcePaths() []string
 	// GetFile returns a file, or error if not found
 	GetFile(filename string) (io.Reader, error)
+
+	AllPaths() []string
 }

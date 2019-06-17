@@ -2,8 +2,9 @@ package logger
 
 import (
 	"fmt"
-	"github.com/logrusorgru/aurora"
 	"io"
+
+	"github.com/logrusorgru/aurora"
 )
 
 var colourer = aurora.NewAurora(false)
@@ -38,9 +39,9 @@ func Panic(msg interface{}) {
 func Notice(msg interface{}, v ...interface{}) {
 	switch t := msg.(type) {
 	case string:
-		print(fmt.Sprintf(t, v...), colourer.Gray)
+		print(fmt.Sprintf(t, v...), func(x interface{}) aurora.Value { return colourer.Gray(15, x) })
 	default:
-		print(msg.(string), colourer.Gray)
+		print(msg.(string), func(x interface{}) aurora.Value { return colourer.Gray(15, x) })
 	}
 }
 

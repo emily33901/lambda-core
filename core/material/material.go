@@ -1,6 +1,6 @@
 package material
 
-import "github.com/galaco/Lambda-Core/core/texture"
+import "github.com/emily33901/lambda-core/core/texture"
 
 // Material
 type Material struct {
@@ -39,6 +39,15 @@ func (mat *Material) Height() int {
 // filesystem it was found
 func (mat *Material) FilePath() string {
 	return mat.filePath
+}
+
+func (mat *Material) EvictTextures() {
+	if mat.Textures.Albedo != nil {
+		mat.Textures.Albedo.EvictFromMainMemory()
+	}
+	if mat.Textures.Normal != nil {
+		mat.Textures.Normal.EvictFromMainMemory()
+	}
 }
 
 func NewMaterial(filePath string) *Material {

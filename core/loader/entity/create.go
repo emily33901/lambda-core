@@ -1,9 +1,9 @@
 package entity
 
 import (
-	entity3 "github.com/galaco/Lambda-Core/core/entity"
-	"github.com/galaco/Lambda-Core/core/filesystem"
-	"github.com/galaco/Lambda-Core/core/loader/entity/classmap"
+	entity3 "github.com/emily33901/lambda-core/core/entity"
+	"github.com/emily33901/lambda-core/core/filesystem"
+	"github.com/emily33901/lambda-core/core/loader/entity/classmap"
 	"github.com/galaco/source-tools-common/entity"
 	"github.com/galaco/vmf"
 	"github.com/go-gl/mathgl/mgl32"

@@ -1,8 +1,8 @@
 package common
 
 import (
-	"github.com/galaco/Lambda-Core/core/entity"
-	entity2 "github.com/galaco/Lambda-Core/game/entity"
+	"github.com/emily33901/lambda-core/core/entity"
+	entity2 "github.com/emily33901/lambda-core/game/entity"
 )
 
 // PropPhysicsOverride

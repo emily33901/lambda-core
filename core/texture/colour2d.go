@@ -1,7 +1,7 @@
 package texture
 
 import (
-	"github.com/galaco/vtf/format"
+	"github.com/emily33901/vtf/format"
 )
 
 // Colour2D is a material defined by raw/computed colour data,
