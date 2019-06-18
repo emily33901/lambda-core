@@ -1,6 +1,8 @@
 package material
 
-import "github.com/emily33901/lambda-core/core/texture"
+import (
+	"github.com/emily33901/lambda-core/core/texture"
+)
 
 // Material
 type Material struct {

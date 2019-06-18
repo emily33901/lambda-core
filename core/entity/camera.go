@@ -20,9 +20,9 @@ const (
 
 var (
 	OrthoDirections = [...]string{
-		"X",
-		"Y",
-		"Z",
+		"Front Z/Y",
+		"Top X/Z",
+		"Size X/Y",
 	}
 )
 
@@ -37,6 +37,7 @@ type Camera struct {
 	worldUp          mgl32.Vec3
 	ortho            bool
 	orthoOrientation int
+	orthoZoom        float32
 }
 
 // Forwards
@@ -67,6 +68,11 @@ func (camera *Camera) Right(dt float64) {
 	camera.Transform().Position = camera.Transform().Position.Add(camera.right.Mul(float32(cameraSpeed * dt)))
 }
 
+// Move
+func (camera *Camera) Move(dt mgl32.Vec3) {
+	camera.Transform().Position = camera.Transform().Position.Add(dt)
+}
+
 // Rotate
 func (camera *Camera) Rotate(x, y, z float32) {
 	camera.Transform().Rotation[0] -= float32(x * sensitivity)
@@ -94,13 +100,18 @@ func (camera *Camera) SetAspect(newAspect float32) {
 }
 
 func (camera *Camera) Zoom(dt float32) {
-	camera.fov += dt
+	if !camera.ortho {
+		camera.fov += dt
 
-	if camera.fov > 71 {
-		camera.fov = 71
-	} else if camera.fov < 69.3 {
-		camera.fov = 69.3
+		if camera.fov > 71 {
+			camera.fov = 71
+		} else if camera.fov < 69.3 {
+			camera.fov = 69.3
+		}
+	} else {
+		camera.orthoZoom += dt * 100
 	}
+
 }
 
 func (camera *Camera) Ortho() bool {
@@ -142,6 +153,37 @@ func (camera *Camera) updateVectors() {
 	camera.up = camera.right.Cross(camera.direction)
 }
 
+// ScreenToWorldMatrix returns the matrix that can transform a screen point into its
+// world coordinates
+func (camera *Camera) ScreenToWorld(viewPort, point mgl32.Vec2) mgl32.Vec3 {
+	r, err := mgl32.UnProject(point.Vec3(0.5), camera.ModelMatrix().Mul4(camera.ViewMatrix()), camera.ProjectionMatrix(), 0, 0, int(viewPort[0]), int(viewPort[1]))
+
+	if err != nil {
+		panic(err)
+	}
+
+	return r
+
+	// mvp := camera.ModelMatrix().Mul4(camera.ProjectionMatrix()).Mul4(camera.ViewMatrix()).Inv()
+
+	// clipSpace := mvp.Mul(1 / mvp[3])
+
+	// // Convert the point to ndc's
+	// w := viewPort.X()
+	// h := viewPort.Y()
+
+	// point[0] -= 0.5 * w
+	// point[1] -= 0.5 * h
+
+	// point[0] = (point[0] / w) * 2
+	// point[1] = (point[1] / w) * 2
+
+	// point4 := point.Vec4(0, 0)
+	// point4[3] = 0
+
+	// return mvp.Mul4x1(point4)
+}
+
 // ModelMatrix returns identity matrix (camera model is our position!)
 func (camera *Camera) ModelMatrix() mgl32.Mat4 {
 	return mgl32.Ident4()
@@ -169,11 +211,9 @@ func (camera *Camera) ViewMatrix() mgl32.Mat4 {
 }
 
 // ProjectionMatrix calculates projection matrix.
-// This is unlikely to change throughout program lifetime, but could do
 func (camera *Camera) ProjectionMatrix() mgl32.Mat4 {
 	if camera.ortho {
-		// @TODO we need a "zoom" for ortho
-		base := 50 * camera.fov
+		base := 50 * camera.orthoZoom
 		return mgl32.Ortho(0, base*camera.aspectRatio, base, 0, -99999, 99999)
 	}
 
@@ -194,5 +234,6 @@ func NewCamera(fov float32, aspectRatio float32) *Camera {
 		up:          mgl32.Vec3{0, 1, 0},
 		worldUp:     mgl32.Vec3{0, 1, 0},
 		direction:   mgl32.Vec3{0, 0, -1},
+		orthoZoom:   70,
 	}
 }
