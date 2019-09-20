@@ -6,7 +6,7 @@ import (
 	"github.com/go-gl/mathgl/mgl32"
 )
 
-const cameraSpeed = float64(320)
+const cameraSpeed = float32(320)
 const sensitivity = float32(0.03)
 
 var minVerticalRotation = mgl32.DegToRad(90)
@@ -30,7 +30,6 @@ var (
 type Camera struct {
 	*Base
 	fov              float32
-	aspectRatio      float32
 	up               mgl32.Vec3
 	right            mgl32.Vec3
 	direction        mgl32.Vec3
@@ -41,36 +40,48 @@ type Camera struct {
 }
 
 // Forwards
-func (camera *Camera) Forwards(dt float64) {
+func (camera *Camera) Forwards(dt float32) {
 	if !camera.ortho {
 		camera.Transform().Position = camera.Transform().Position.Add(camera.direction.Mul(float32(cameraSpeed * dt)))
 	} else {
-		camera.Transform().Position = camera.Transform().Position.Add(camera.up.Mul(float32(-cameraSpeed * dt)))
+		camera.Transform().Position = camera.Transform().Position.Add(camera.up.Normalize().Mul(float32(dt)))
 	}
 }
 
 // Backwards
-func (camera *Camera) Backwards(dt float64) {
+func (camera *Camera) Backwards(dt float32) {
 	if !camera.ortho {
 		camera.Transform().Position = camera.Transform().Position.Sub(camera.direction.Mul(float32(cameraSpeed * dt)))
 	} else {
-		camera.Transform().Position = camera.Transform().Position.Sub(camera.up.Mul(float32(-cameraSpeed * dt)))
+		camera.Transform().Position = camera.Transform().Position.Sub(camera.up.Normalize().Mul(float32(dt)))
 	}
 }
 
 // Left
-func (camera *Camera) Left(dt float64) {
-	camera.Transform().Position = camera.Transform().Position.Sub(camera.right.Mul(float32(cameraSpeed * dt)))
+func (camera *Camera) Left(dt float32) {
+	if !camera.ortho {
+		camera.Transform().Position = camera.Transform().Position.Sub(camera.right.Mul(float32(cameraSpeed * dt)))
+	} else {
+		camera.Transform().Position = camera.Transform().Position.Sub(camera.right.Normalize().Mul(float32(dt)))
+	}
 }
 
 // Right
-func (camera *Camera) Right(dt float64) {
-	camera.Transform().Position = camera.Transform().Position.Add(camera.right.Mul(float32(cameraSpeed * dt)))
+func (camera *Camera) Right(dt float32) {
+	if !camera.ortho {
+		camera.Transform().Position = camera.Transform().Position.Add(camera.right.Mul(float32(cameraSpeed * dt)))
+	} else {
+		camera.Transform().Position = camera.Transform().Position.Add(camera.right.Normalize().Mul(float32(dt)))
+	}
 }
 
 // Move
 func (camera *Camera) Move(dt mgl32.Vec3) {
 	camera.Transform().Position = camera.Transform().Position.Add(dt)
+}
+
+func (camera *Camera) SetPos(p mgl32.Vec3) {
+	camera.Transform().Position = p
 }
 
 // Rotate
@@ -94,24 +105,22 @@ func (camera *Camera) setRotation(x, y, z float32) {
 	camera.Transform().Rotation[2] = float32(z)
 }
 
-// SetAspect
-func (camera *Camera) SetAspect(newAspect float32) {
-	camera.aspectRatio = newAspect
-}
-
 func (camera *Camera) Zoom(dt float32) {
 	if !camera.ortho {
 		camera.fov += dt
 
-		if camera.fov > 71 {
-			camera.fov = 71
-		} else if camera.fov < 69.3 {
-			camera.fov = 69.3
+		if camera.fov > 160 {
+			camera.fov = 160
+		} else if camera.fov < 40 {
+			camera.fov = 40
 		}
 	} else {
-		camera.orthoZoom += dt * 100
-	}
+		camera.orthoZoom -= dt * 100
 
+		if camera.orthoZoom < 200 {
+			camera.orthoZoom = 200
+		}
+	}
 }
 
 func (camera *Camera) Ortho() bool {
@@ -122,6 +131,10 @@ func (camera *Camera) SetOrtho(enabled bool) {
 	camera.ortho = enabled
 }
 
+func (camera *Camera) OrthoZoom() float32 {
+	return camera.orthoZoom
+}
+
 func (camera *Camera) OrthoDirection() int {
 	return camera.orthoOrientation
 }
@@ -130,7 +143,7 @@ func (camera *Camera) SetOrthoDirection(new int) {
 }
 
 // Update updates the camera position
-func (camera *Camera) Update(dt float64) {
+func (camera *Camera) Update() {
 	camera.updateVectors()
 }
 
@@ -153,10 +166,9 @@ func (camera *Camera) updateVectors() {
 	camera.up = camera.right.Cross(camera.direction)
 }
 
-// ScreenToWorldMatrix returns the matrix that can transform a screen point into its
-// world coordinates
-func (camera *Camera) ScreenToWorld(viewPort, point mgl32.Vec2) mgl32.Vec3 {
-	r, err := mgl32.UnProject(point.Vec3(0.5), camera.ModelMatrix().Mul4(camera.ViewMatrix()), camera.ProjectionMatrix(), 0, 0, int(viewPort[0]), int(viewPort[1]))
+// ScreenToWorld returns the world position of a point (x, y) and depth (z)
+func (camera *Camera) ScreenToWorld(point mgl32.Vec3, viewPort mgl32.Vec2, aspectRatio float32) mgl32.Vec3 {
+	r, err := mgl32.UnProject(point, camera.ModelMatrix().Mul4(camera.ViewMatrix()), camera.ProjectionMatrix(aspectRatio), 0, 0, int(viewPort[0]), int(viewPort[1]))
 
 	if err != nil {
 		panic(err)
@@ -192,13 +204,13 @@ func (camera *Camera) ModelMatrix() mgl32.Mat4 {
 // ViewMatrix calculates the cameras View matrix
 func (camera *Camera) ViewMatrix() mgl32.Mat4 {
 	if camera.ortho {
-		// @TODO We probably shouldnt be doing this every time...
+		// TODO We probably shouldnt be doing this every time...
 		// And we defo should not be doing it here!
 		switch camera.orthoOrientation {
 		case OrthoX:
 			camera.setRotation(0, mgl32.DegToRad(-90), 0)
 		case OrthoY:
-			camera.setRotation(0, 0, 0)
+			camera.setRotation(0, 0, mgl32.DegToRad(-90))
 		case OrthoZ:
 			camera.setRotation(mgl32.DegToRad(90), 0, 0)
 		}
@@ -211,29 +223,32 @@ func (camera *Camera) ViewMatrix() mgl32.Mat4 {
 }
 
 // ProjectionMatrix calculates projection matrix.
-func (camera *Camera) ProjectionMatrix() mgl32.Mat4 {
+func (camera *Camera) ProjectionMatrix(aspectRatio float32) mgl32.Mat4 {
 	if camera.ortho {
-		base := 50 * camera.orthoZoom
-		return mgl32.Ortho(0, base*camera.aspectRatio, base, 0, -99999, 99999)
+		base := camera.OrthoZoom()
+		return mgl32.Ortho(0, base*aspectRatio, base, 0, -99999, 99999)
 	}
 
-	return mgl32.Perspective(camera.fov, camera.aspectRatio, 0.1, 16384)
+	return mgl32.Perspective(mgl32.DegToRad(camera.fov), aspectRatio, 0.1, 16384)
 }
 
 func (camera *Camera) Fov() float32 {
 	return camera.fov
 }
 
+func (camera *Camera) Direction() mgl32.Vec3 {
+	return camera.direction
+}
+
 // NewCamera returns a new camera
 // fov should be provided in radians
-func NewCamera(fov float32, aspectRatio float32) *Camera {
+func NewCamera(fov float32) *Camera {
 	return &Camera{
-		Base:        &Base{},
-		fov:         fov,
-		aspectRatio: aspectRatio,
-		up:          mgl32.Vec3{0, 1, 0},
-		worldUp:     mgl32.Vec3{0, 1, 0},
-		direction:   mgl32.Vec3{0, 0, -1},
-		orthoZoom:   70,
+		Base:      &Base{},
+		fov:       fov,
+		up:        mgl32.Vec3{0, 1, 0},
+		worldUp:   mgl32.Vec3{0, 1, 0},
+		direction: mgl32.Vec3{0, 0, -1},
+		orthoZoom: 1000,
 	}
 }

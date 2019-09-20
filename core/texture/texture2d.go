@@ -55,7 +55,7 @@ func (tex *Texture2D) EvictFromMainMemory() {
 
 // NewTexture2D returns a new texture from Vtf
 func NewTexture2D(filePath string, vtf *vtf.Vtf, width int, height int) *Texture2D {
-	// @TODO: we should be able to load the vtf all by ourselves!
+	// TODO: we should be able to load the vtf all by ourselves!
 	return &Texture2D{
 		filePath: filePath,
 		width:    width,

@@ -140,7 +140,7 @@ func (fs *FileSystem) AllPaths() []string {
 		finfo, err := ioutil.ReadDir(dir)
 		if err == nil {
 			for _, f := range finfo {
-				// @TODO check this returns the correct file name
+				// TODO check this returns the correct file name
 				results = append(results, f.Name())
 			}
 		}
@@ -151,7 +151,7 @@ func (fs *FileSystem) AllPaths() []string {
 		results = append(results, vfs.Paths()...)
 	}
 
-	// @TODO: handle pak files
+	// TODO: handle pak files
 
 	return results
 }

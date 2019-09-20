@@ -3,6 +3,7 @@ package mesh
 import (
 	"github.com/emily33901/lambda-core/core/material"
 	"github.com/emily33901/lambda-core/core/texture"
+	"github.com/go-gl/mathgl/mgl32"
 )
 
 // IMesh Generic Mesh interface
@@ -10,26 +11,29 @@ import (
 // are probably many custom cases that may not
 type IMesh interface {
 	// AddVertex
-	AddVertex(...float32)
+	AddVertex(...mgl32.Vec3)
 	// AddNormal
-	AddNormal(...float32)
+	AddNormal(...mgl32.Vec3)
 	// AddUV
-	AddUV(...float32)
+	AddUV(...mgl32.Vec2)
 	// AddLightmapCoordinate
-	AddLightmapCoordinate(...float32)
+	AddLightmapCoordinate(...mgl32.Vec3)
 	// GenerateTangents
 	GenerateTangents()
 
 	// Vertices
-	Vertices() []float32
+	Vertices() []mgl32.Vec3
 	// Normals
-	Normals() []float32
+	Normals() []mgl32.Vec3
 	// UVs
-	UVs() []float32
+	UVs() []mgl32.Vec2
 	// Tangents
-	Tangents() []float32
+	Tangents() []mgl32.Vec4
+	// Colors
+	Colors() []float32
+	ResetColors(colors ...float32)
 	// LightmapCoordinates
-	LightmapCoordinates() []float32
+	LightmapCoordinates() []mgl32.Vec3
 
 	// Material
 	Material() material.IMaterial

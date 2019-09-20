@@ -41,7 +41,7 @@ func CreateEntity(ent *entity.Entity, fs filesystem.IFileSystem) entity3.IEntity
 }
 
 // AssignProperties assigns type specific properties.
-// @TODO This is probably going to grow massively as more common types get implemented.
+// TODO This is probably going to grow massively as more common types get implemented.
 // It should probably be refactored.
 func AssignProperties(ent entity3.IEntity, fs filesystem.IFileSystem) {
 	if DoesEntityReferenceStudioModel(ent) {

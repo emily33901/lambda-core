@@ -7,7 +7,7 @@ import (
 	"github.com/go-gl/mathgl/mgl32"
 )
 
-// @TODO THIS IS NOT COMPLETE. IT DOES NOT WORK
+// TODO THIS IS NOT COMPLETE. IT DOES NOT WORK
 
 // Atlas
 // A texture atlas implementation.

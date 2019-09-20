@@ -17,7 +17,7 @@ import (
 	"strings"
 )
 
-// @TODO This is SUPER incomplete
+// TODO This is SUPER incomplete
 // right now it does the bare minimum, and many models seem to have
 // some corruption.
 
@@ -109,7 +109,7 @@ func modelFromStudioModel(filename string, studioModel *studiomodel.StudioModel,
 		smMesh.AddUV(textureCoordinates[i]...)
 		//smMesh.Finish()
 
-		//@TODO Map ALL materials to mesh data
+		//TODO Map ALL materials to mesh data
 		smMesh.SetMaterial(mats[0])
 
 		outModel.AddMesh(smMesh)
