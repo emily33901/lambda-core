@@ -1,44 +1,49 @@
 package math
 
 import (
+	"github.com/emily33901/lambda-core/core/logger"
 	"github.com/go-gl/mathgl/mgl32"
 )
 
 func IntersectSegmentTriangle(segmentOrigin, segmentVec, vert0, vert1, vert2 mgl32.Vec3) (mgl32.Vec3, bool) {
-	const epsilon = 0.0000001
+	const epsilon = 0.000001
 
 	edge1 := vert1.Sub(vert0)
 	edge2 := vert2.Sub(vert1)
 
 	h := segmentVec.Cross(edge2)
-	a := edge1.Dot(h)
+	det := edge1.Dot(h)
 
-	if a > -epsilon && a < epsilon {
+	if det > -epsilon && det < epsilon {
 		// parallel
+		logger.Notice("parallel")
 		return mgl32.Vec3{0, 0, 0}, false
 	}
 
-	f := 1 / a
+	invDet := 1 / det
 	s := segmentOrigin.Sub(vert0)
-	u := f * s.Dot(h)
+	u := invDet * s.Dot(h)
 
 	if u < 0 || u > 1 {
+		// logger.Notice("u is %f", u)
 		return mgl32.Vec3{0, 0, 0}, false
 	}
 
 	q := s.Cross(edge1)
-	v := f * segmentVec.Dot(q)
+	v := invDet * segmentVec.Dot(q)
 
-	if v < 0.0 || u+v > 1.0 {
+	if u+v > 1.0 || v < 0.0 {
+		logger.Notice("v is %f u+v is %f", v, u+v)
 		return mgl32.Vec3{0, 0, 0}, false
 	}
 
-	t := f * edge2.Dot(q)
+	t := invDet * edge2.Dot(q)
 
 	if t > epsilon {
 		// we hit
 		return segmentOrigin.Add(segmentVec.Mul(t)), true
 	}
+	logger.Notice("t is %f ", t)
 
 	return mgl32.Vec3{0, 0, 0}, false
 }
