@@ -14,8 +14,7 @@ import (
 // All games should ship with a gameinfo.txt, but it isn't actually mandatory.
 func CreateFilesystemFromGameInfoDefinitions(basePath string, gameInfo *keyvalues.KeyValue) IFileSystem {
 	fs := NewFileSystem()
-	gameInfoNode, _ := gameInfo.Find("GameInfo")
-	fsNode, _ := gameInfoNode.Find("FileSystem")
+	fsNode, _ := gameInfo.Find("FileSystem")
 
 	searchPathsNode, _ := fsNode.Find("SearchPaths")
 	searchPaths, _ := searchPathsNode.Children()

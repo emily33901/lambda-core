@@ -2,26 +2,20 @@ package material
 
 import (
 	"github.com/emily33901/lambda-core/core/texture"
+	"github.com/golang-source-engine/vmt"
 )
 
 // Material
 type Material struct {
+	Props *vmt.Properties
+
 	filePath string
-	// ShaderName
-	ShaderName string
-	// Textures
+
 	Textures struct {
 		// Albedo
 		Albedo texture.ITexture
 		// Normal
 		Normal texture.ITexture
-	}
-	// BaseTextureName
-	BaseTextureName string
-	// BumpMapName
-	BumpMapName string
-	// Properties
-	Properties struct {
 	}
 }
 
@@ -52,8 +46,13 @@ func (mat *Material) EvictTextures() {
 	}
 }
 
-func NewMaterial(filePath string) *Material {
+func NewMaterial(filePath string, props *vmt.Properties) *Material {
 	return &Material{
 		filePath: filePath,
+		Props:    props,
 	}
+}
+
+func NewProperties() *vmt.Properties {
+	return vmt.NewProperties()
 }

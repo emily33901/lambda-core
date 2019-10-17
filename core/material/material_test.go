@@ -1,8 +1,9 @@
 package material
 
 import (
-	"github.com/emily33901/lambda-core/core/texture"
 	"testing"
+
+	"github.com/emily33901/lambda-core/core/texture"
 )
 
 func TestMaterial_FilePath(t *testing.T) {
