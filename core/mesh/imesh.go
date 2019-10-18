@@ -43,4 +43,6 @@ type IMesh interface {
 	Lightmap() texture.ITexture
 	// SetLightmap
 	SetLightmap(texture.ITexture)
+
+	Meta(string) interface{}
 }

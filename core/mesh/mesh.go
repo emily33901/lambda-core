@@ -18,6 +18,9 @@ type Mesh struct {
 
 	material material.IMaterial
 	lightmap texture.ITexture
+
+	// meta holds metadata about the mesh (i.e. mapping to a solid or entity id...)
+	meta map[string]interface{}
 }
 
 // AddVertex
@@ -123,6 +126,16 @@ func (mesh *Mesh) Colors() []float32 {
 
 // Higher level mesh features
 
+// Meta returns metadata
+func (mesh *Mesh) Meta(key string) interface{} {
+	return mesh.meta[key]
+}
+
+// SetMeta sets metadata
+func (mesh *Mesh) SetMeta(key string, value interface{}) {
+	mesh.meta[key] = value
+}
+
 // AddLine adds a line between 2 points
 func (mesh *Mesh) AddLine(color []float32, a, b mgl32.Vec3) {
 	mesh.AddVertex(a)
@@ -141,5 +154,7 @@ func (mesh *Mesh) AddLine(color []float32, a, b mgl32.Vec3) {
 
 // NewMesh
 func NewMesh() *Mesh {
-	return &Mesh{}
+	return &Mesh{
+		meta: make(map[string]interface{}),
+	}
 }
