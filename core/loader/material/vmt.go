@@ -52,7 +52,7 @@ func loadMaterials(fs filesystem.IFileSystem, materialList ...string) (missingLi
 			continue
 		}
 
-		logger.Notice(materialPath)
+		// logger.Notice(materialPath)
 		mat, err := vmt.FromFilesystem(materialPath, fs, vmt.NewProperties())
 
 		if err != nil {
